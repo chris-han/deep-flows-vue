@@ -1,5 +1,5 @@
 <template>
-  <div class="node">
+  <div class="node" ref="node">
     <Handle type="target" position="left" :position="Position.Left" />
     <div class="node-content" :style="{ backgroundColor: props.data.contentBgColor }">
       <div class="text-sm font-semibold mb-2">
@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { Handle, Position } from '@vue-flow/core'
-import { watch } from 'vue'
+import { watch, ref, onMounted } from 'vue'
 import BaseNode from './BaseNode.vue'
 import './BaseNode.vue';
 
@@ -45,8 +45,18 @@ const props = defineProps<{
   id: string  
 }>()
 
+const node = ref(null)
+
 watch(() => props.data.contentBgColor, (newColor) => {
-  document.querySelector('.node-content').style.backgroundColor = newColor;
+  if (node.value) {
+    node.value.querySelector('.node-content').style.backgroundColor = newColor;
+  }
+});
+
+onMounted(() => {
+  if (node.value) {
+    node.value.querySelector('.node-content').style.backgroundColor = props.data.contentBgColor;
+  }
 });
 </script>
 
