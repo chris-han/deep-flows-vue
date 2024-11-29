@@ -69,17 +69,16 @@ const handleDragEnter = (event: DragEvent) => {
 };
 
 const handleDrop = (event: DragEvent) => {
-  const type = event.dataTransfer?.getData('node-type');
-  if (type) {
-    // Get the drop position relative to the workflow container
+  event.preventDefault();
+  const nodeType = event.dataTransfer?.getData('node-type');
+  
+  if (nodeType === 'process') {
     const bounds = event.currentTarget.getBoundingClientRect();
     const position = {
       x: event.clientX - bounds.left,
       y: event.clientY - bounds.top
     };
-    
-    // Pass position to handleAddNode
-    handleAddNode(type, position);
+    handleAddNode('process', position, { label: 'process content...' });
   }
 };
 </script>
