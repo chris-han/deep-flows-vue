@@ -1,5 +1,8 @@
 <template>
-  <div class="h-screen w-full" @drop.prevent="handleDrop" @dragover.prevent>
+  <div class="h-screen w-full" 
+       @drop.prevent="handleDrop" 
+       @dragover.prevent
+       @dragenter.prevent>
     <ToolbarMenu @add-node="handleAddNode" />
     <VueFlow 
       :id="'vue-flow-instance'"  
@@ -38,11 +41,6 @@ import '@vue-flow/minimap/dist/style.css';
 
 const { nodeTypes, handleAddNode, handleConnect, nodes } = useWorkflowStore();
 
-const onNodeDrop = (event: DragEvent) => {
-  const type = event.dataTransfer?.getData('node-type'); 
-  if (type) handleAddNode(type);
-};
-
 const onConnect = (params: Edge) => {
   handleConnect(params); 
 };
@@ -52,6 +50,13 @@ watch(nodes, (newValue) => {
   // Any necessary logic on nodes change
 }, { deep: true });
 
+const handleDrop = (event: DragEvent) => {
+  console.log('Drop event triggered');
+  const type = event.dataTransfer?.getData('node-type');
+  if (type) {
+    handleAddNode(type);
+  }
+};
 </script>
 
 <style>
