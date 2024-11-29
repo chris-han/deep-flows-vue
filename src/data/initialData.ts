@@ -6,14 +6,14 @@ export const initialNodes: Node[] = [
     type: 'custom',
     label: 'Input Node',
     position: { x: 100, y: 100 },
-    data: { type: 'input', content: '' }
+    data: { type: 'input', content: 'extract from sql' }
   },
   {
     id: '2',
     type: 'custom',
     label: 'Process Node',
     position: { x: 400, y: 100 },
-    data: { type: 'process', content: '' }
+    data: { type: 'process', content: 'transform the data' }
   }
 ]
 
