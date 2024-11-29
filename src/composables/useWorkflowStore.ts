@@ -1,39 +1,69 @@
-import { ref } from 'vue'
-import { useVueFlow } from '@vue-flow/core'
-import type { Node, Edge } from '@vue-flow/core'
+// src/composables/useWorkflowStore.ts
 import CustomNode from '../components/nodes/CustomNode.vue'
-import { initialNodes, initialEdges } from '../data/initialData'
+import { ref } from 'vue';
 
-export function useWorkflowStore() {
-  const { nodes, edges, setNodes, setEdges, onConnect, addEdges } = useVueFlow({
-    defaultNodes: initialNodes,
-    defaultEdges: initialEdges,
-  })
+interface Node {
+  id: string;
+  type: string;
+  position: { x: number, y: number };
+  data: { label: string };
+}
+
+interface Edge {
+  id: string;
+  source: string;
+  target: string;
+  type?: string;
+}
+
+let nodeId = 0;
+
+export const useWorkflowStore = () => {
+  const nodes = ref<Node[]>([]);
+  const edges = ref<Edge[]>([]);
 
   const nodeTypes = {
-    custom: CustomNode
-  }
-
-  const handleAddNode = () => {
-    const id = `${nodes.value.length + 1}`
+    custom: CustomNode,
+    default: CustomNode // Optional: fallback type
+  };
+  // const handleAddNode = (type = 'default') => {
+  //   const newNode: Node = {
+  //     id: `node-${nodeId++}`,
+  //     type,
+  //     position: { x: Math.random() * 250, y: Math.random() * 250 },
+  //     data: { label: `${type.charAt(0).toUpperCase() + type.slice(1)} Node ${nodeId}` }
+  //   };
+  //   nodes.value.push(newNode);
+  // };
+  const handleAddNode = (type: string, position?: { x: number; y: number }) => {
+    // Use provided position or default position if none provided
+    const nodePosition = position || { x: 0, y: 0 };
+    console.log('Drop event triggered',position);
+    // Create node with the specified position
     const newNode = {
-      id,
-      type: 'custom',
-      label: `Node ${id}`,
-      position: { x: 100 + Math.random() * 100, y: 100 + Math.random() * 100 },
-      data: { type: 'process', content: '' }
-    }
-    setNodes([...nodes.value, newNode])
-  }
+      id: `node-${nodeId++}`,
+      type,
+      position: nodePosition,
+      data: { label: `${type.charAt(0).toUpperCase() + type.slice(1)} Node` } // Add the data property
+    };
+    nodes.value.push(newNode);
+  };
 
-  onConnect((params) => {
-    addEdges([params])
-  })
+  const handleConnect = (params: Edge) => {
+    const newEdge: Edge = {
+      id: `edge-${params.source}-${params.target}`,
+      source: params.source,
+      target: params.target,
+      type: params.type,
+    };
+    edges.value.push(newEdge);
+  };
 
   return {
     nodes,
     edges,
-    nodeTypes,
-    handleAddNode
-  }
-}
+    handleAddNode,
+    handleConnect,
+    nodeTypes, // Dummy node type for example purposes; adjust as needed
+  };
+};

@@ -1,8 +1,8 @@
 <template>
   <div class="h-screen w-full" 
-       @drop.prevent="handleDrop" 
-       @dragover.prevent
-       @dragenter.prevent>
+       @drop="handleDrop" 
+       @dragover="handleDragOver"
+       @dragenter="handleDragEnter">
     <ToolbarMenu @add-node="handleAddNode" />
     <VueFlow 
       :id="'vue-flow-instance'"  
@@ -11,9 +11,13 @@
       class="workflow-container"
       :default-zoom="1.5"
       :min-zoom="0.2"
-      :max-zoom="4"
-      @nodeDrop="onNodeDrop"
-      @connect="onConnect"    
+      :max-zoom="4"      
+      @connect="onConnect"
+      @nodeMouseEnter.passive
+      @nodeMouseMove.passive
+      @nodeMouseLeave.passive
+      @paneScroll.passive
+      @paneDrag.passive 
     >
       <WorkflowBackground />
       <WorkflowControls />
@@ -50,11 +54,33 @@ watch(nodes, (newValue) => {
   // Any necessary logic on nodes change
 }, { deep: true });
 
+// const handleDrop = (event: DragEvent) => {
+//   console.log('Drop event triggered');
+//   const type = event.dataTransfer?.getData('node-type');
+//   if (type) {
+//     handleAddNode(type);
+//   }
+// };
+const handleDragOver = (event: DragEvent) => {
+  event.preventDefault();
+};
+
+const handleDragEnter = (event: DragEvent) => {
+  event.preventDefault();
+};
+
 const handleDrop = (event: DragEvent) => {
-  console.log('Drop event triggered');
   const type = event.dataTransfer?.getData('node-type');
   if (type) {
-    handleAddNode(type);
+    // Get the drop position relative to the workflow container
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const position = {
+      x: event.clientX - bounds.left,
+      y: event.clientY - bounds.top
+    };
+    
+    // Pass position to handleAddNode
+    handleAddNode(type, position);
   }
 };
 </script>

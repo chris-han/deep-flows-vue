@@ -2,9 +2,9 @@
   <div class="toolbar-menu">
     <div class="toolbar-item" 
          draggable="true"
-         @dragstart="startDrag"
-         @drag="onDrag"
-         @dragend="stopDrag"
+         @dragstart.passive="startDrag"
+         @drag.passive="onDrag"
+         @dragend.passive="stopDrag"
          title="Drag generic node"
          aria-label="Drag generic node">
       <span>🟦</span>
@@ -33,7 +33,7 @@ const startDrag = (event: DragEvent) => {
     // Clean up the temporary element after drag starts
     setTimeout(() => document.body.removeChild(dragImage), 0);
   }
-  emit('add-node', 'generic');
+  // emit('add-node', 'generic');
 };
 
 const onDrag = (event: DragEvent) => {

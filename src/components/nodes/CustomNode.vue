@@ -20,6 +20,9 @@ const props = defineProps<{
         v-model="props.data.content"
         class="w-full p-2 border rounded"
         :placeholder="`${props.data.type} content...`"
+        @touchstart.passive
+        @touchmove.passive
+        @touchend.passive
       />
     </div>
     <Handle type="source" position="right" :position="Position.Right" />
