@@ -1,9 +1,11 @@
 <template>
-  <div class="h-screen w-full" 
+  <div class="h-screen w-full relative" 
        @drop="handleDrop" 
        @dragover="handleDragOver"
        @dragenter="handleDragEnter">
-    <ToolbarMenu @add-node="handleAddNode" />
+    <div class="absolute top-0 left-0 z-10">
+      <ToolbarMenu @add-node="handleAddNode" />
+    </div>
     <VueFlow 
       :id="'vue-flow-instance'"  
       v-model:nodes="nodes"   
@@ -22,9 +24,6 @@
       <WorkflowBackground />
       <WorkflowControls />
       <WorkflowNodes />
-      <template #panel-top-left>
-        <WorkflowToolbar @add-node="handleAddNode" />
-      </template>
     </VueFlow>
   </div>
 </template>

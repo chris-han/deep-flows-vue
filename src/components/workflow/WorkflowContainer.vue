@@ -1,7 +1,7 @@
 <template>
   <div class="h-screen w-full">
     <VueFlow
-      :id="'vue-flow-instance'"  <!-- Use the id parameter -->
+      :id="'vue-flow-instance'" 
       :node-types="nodeTypes"
       class="workflow-container"
       :default-zoom="1.5"
@@ -36,9 +36,12 @@ const { nodeTypes, handleAddNode } = useWorkflowStore();
 }
 
 .workflow-panel {
-  z-index: 5;
+  /* Remove absolute positioning as Panel component handles it */
+  margin: 10px;  /* Add some margin for spacing */
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-
 :root {
   --vf-node-bg: #fff;
   --vf-node-text: #222;
