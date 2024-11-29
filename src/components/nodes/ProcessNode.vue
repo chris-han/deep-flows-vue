@@ -1,6 +1,7 @@
 <template>
   <div class="node" ref="node">
     <Handle type="target" position="left" :position="Position.Left" />
+    <Handle type="target" position="left" :position="Position.Left" />
     <div class="node-content" :style="{ backgroundColor: props.data.contentBgColor }">
       <div class="text-sm font-semibold mb-2">
         <span class="process-icon">⚙️</span>
@@ -29,11 +30,12 @@
   </div>
 </template>
 
+
 <script setup lang="ts">
 import { Handle, Position } from '@vue-flow/core'
 import { watch, ref, onMounted } from 'vue'
-import BaseNode from './BaseNode.vue'
-import './BaseNode.vue';
+// import BaseNode from './BaseNode.vue'
+import './BaseNode.vue'
 
 const props = defineProps<{
   data: {

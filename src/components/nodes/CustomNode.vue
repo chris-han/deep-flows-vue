@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { Handle, Position } from '@vue-flow/core'
 import { watch, ref, onMounted } from 'vue'
-import BaseNode from './BaseNode.vue'
+// import BaseNode from './BaseNode.vue'
 import './BaseNode.vue';
 
 const props = defineProps<{

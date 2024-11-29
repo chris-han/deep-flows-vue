@@ -16,14 +16,16 @@
       :default-zoom="1.5"
       :min-zoom="0.2"
       :max-zoom="4"      
-      @connect="onConnect"
-      @nodeContextMenu="onNodeContextMenu"
-      @edgeContextMenu="onEdgeContextMenu"
-      @nodeMouseEnter.passive
-      @nodeMouseMove.passive
-      @nodeMouseLeave.passive
-      @paneScroll.passive
-      @paneDrag.passive 
+      @connect="onConnect" 
+      @nodeContextMenu="onNodeContextMenu" 
+      @edgeContextMenu="onEdgeContextMenu" 
+      @nodeClick="onNodeClick" 
+      @edgeClick="onEdgeClick" 
+      @nodeMouseEnter="onNodeMouseEnter"
+      @nodeMouseMove="onNodeMouseMove" 
+      @nodeMouseLeave="onNodeMouseLeave" 
+      @paneScroll="onPaneScroll"
+      @paneDrag="onPaneDrag"
     >
       <WorkflowBackground />
       <WorkflowControls />
@@ -52,17 +54,17 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue';
-import { VueFlow, Node, Edge, NodeMouseEvent, EdgeMouseEvent } from '@vue-flow/core'; 
+import { VueFlow, Node, Edge } from '@vue-flow/core'; 
 import WorkflowBackground from './workflow/WorkflowBackground.vue';
 import WorkflowControls from './workflow/WorkflowControls.vue';
 import WorkflowNodes from './workflow/WorkflowNodes.vue';
-import WorkflowToolbar from './workflow/WorkflowToolbar.vue';
 import ToolbarMenu from './ToolbarMenu.vue'; 
 import { useWorkflowStore } from '../composables/useWorkflowStore';
 import '@vue-flow/core/dist/style.css';
 import '@vue-flow/core/dist/theme-default.css';
 import '@vue-flow/controls/dist/style.css';
 import '@vue-flow/minimap/dist/style.css';
+// import { handleConnect } from '../composables/useWorkflowStore'; // Ensure this is correctly imported
 
 const { 
   nodeTypes, 
@@ -106,8 +108,11 @@ const handleColorChange = (color: string) => {
 
 // Handle keyboard delete
 const handleKeyDown = (event: KeyboardEvent) => {
-  if (event.key === 'Delete' && selectedElement.value) {
+  console.log(selectedElement.value)
+  if (event.key === 'Delete' && selectedElement.value) { 
+    
     if (selectedElement.value.type === 'node') {
+      
       removeNode(selectedElement.value.id);
     } else {
       removeEdge(selectedElement.value.id);
@@ -126,6 +131,7 @@ const onNodeContextMenu = (event: { event: MouseEvent, node: Node }) => {
     top: `${event.event.clientY}px`,
     left: `${event.event.clientX}px`,
   };
+  document.removeEventListener('keydown', handleKeyDown)
 };
 
 const onEdgeContextMenu = (event: { event: MouseEvent, edge: Edge }) => {
@@ -137,6 +143,7 @@ const onEdgeContextMenu = (event: { event: MouseEvent, edge: Edge }) => {
     top: `${event.event.clientY}px`,
     left: `${event.event.clientX}px`,
   };
+  document.removeEventListener('keydown', handleKeyDown);
 };
 const handleDelete = () => {
   if (selectedElement.value) {
@@ -153,15 +160,19 @@ const handleDelete = () => {
 // Close context menu when clicking outside
 const closeContextMenu = () => {
   showContextMenu.value = false;
-  selectedElement.value = null;
-};
+  // selectedElement.value = null;
+  document.addEventListener('keydown', handleKeyDown);
+}; // Add this closing brace
+
 
 onMounted(() => {
   document.addEventListener('click', closeContextMenu);
+  document.addEventListener('keydown', handleKeyDown);
 });
 
 onUnmounted(() => {
   document.removeEventListener('click', closeContextMenu);
+  document.removeEventListener('keydown', handleKeyDown);
 });
 
 const onConnect = (params: Edge) => {
@@ -192,10 +203,9 @@ const handleDrop = (event: DragEvent) => {
       x: event.clientX - bounds.left,
       y: event.clientY - bounds.top
     };
-    handleAddNode('process', position, { label: 'process content...' });
+    handleAddNode('process', position, { label: 'process content...' })
   }
-};
-
+}
 </script>
 
 <style>
