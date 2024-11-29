@@ -1,6 +1,6 @@
 // src/composables/useWorkflowStore.ts
 import CustomNode from '../components/nodes/CustomNode.vue'
-import { ref } from 'vue';
+import { shallowRef, markRaw } from 'vue';
 
 interface Node {
   id: string;
@@ -19,34 +19,26 @@ interface Edge {
 let nodeId = 0;
 
 export const useWorkflowStore = () => {
-  const nodes = ref<Node[]>([]);
-  const edges = ref<Edge[]>([]);
+  const nodes = shallowRef<Node[]>([]);
+  const edges = shallowRef<Edge[]>([]);
 
   const nodeTypes = {
-    custom: CustomNode,
-    default: CustomNode // Optional: fallback type
+    process: markRaw(CustomNode),  // Add 'process' type
+    custom: markRaw(CustomNode),
+    default: markRaw(CustomNode)
   };
-  // const handleAddNode = (type = 'default') => {
-  //   const newNode: Node = {
-  //     id: `node-${nodeId++}`,
-  //     type,
-  //     position: { x: Math.random() * 250, y: Math.random() * 250 },
-  //     data: { label: `${type.charAt(0).toUpperCase() + type.slice(1)} Node ${nodeId}` }
-  //   };
-  //   nodes.value.push(newNode);
-  // };
+
   const handleAddNode = (type: string, position?: { x: number; y: number }) => {
-    // Use provided position or default position if none provided
     const nodePosition = position || { x: 0, y: 0 };
-    console.log('Drop event triggered',position);
-    // Create node with the specified position
+    console.log('Drop event triggered', position, 'type:', type); // Enhanced logging
+    
     const newNode = {
       id: `node-${nodeId++}`,
-      type,
+      type: type,  // Make sure this matches one of the keys in nodeTypes
       position: nodePosition,
-      data: { label: `${type.charAt(0).toUpperCase() + type.slice(1)} Node` } // Add the data property
+      data: { label: `${type.charAt(0).toUpperCase() + type.slice(1)} Node` }
     };
-    nodes.value.push(newNode);
+    nodes.value = [...nodes.value, newNode]; // Use immutable update pattern
   };
 
   const handleConnect = (params: Edge) => {
