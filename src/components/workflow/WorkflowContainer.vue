@@ -1,17 +1,7 @@
-<script setup lang="ts">
-import { VueFlow, Panel } from '@vue-flow/core'
-import WorkflowBackground from './WorkflowBackground.vue'
-import WorkflowControls from './WorkflowControls.vue'
-import WorkflowNodes from './WorkflowNodes.vue'
-import WorkflowToolbar from './WorkflowToolbar.vue'
-import { useWorkflowStore } from '../../composables/useWorkflowStore'
-
-const { nodeTypes, handleAddNode } = useWorkflowStore()
-</script>
-
 <template>
   <div class="h-screen w-full">
     <VueFlow
+      :id="'vue-flow-instance'"  <!-- Use the id parameter -->
       :node-types="nodeTypes"
       class="workflow-container"
       :default-zoom="1.5"
@@ -27,6 +17,17 @@ const { nodeTypes, handleAddNode } = useWorkflowStore()
     </VueFlow>
   </div>
 </template>
+
+<script setup lang="ts">
+import { VueFlow, Panel } from '@vue-flow/core';
+import WorkflowBackground from './WorkflowBackground.vue';
+import WorkflowControls from './WorkflowControls.vue';
+import WorkflowNodes from './WorkflowNodes.vue';
+import WorkflowToolbar from './WorkflowToolbar.vue';
+import { useWorkflowStore } from '../../composables/useWorkflowStore';
+
+const { nodeTypes, handleAddNode } = useWorkflowStore();
+</script>
 
 <style>
 .workflow-container {
