@@ -8,7 +8,8 @@
     </div>
     <VueFlow 
       :id="'vue-flow-instance'"  
-      v-model:nodes="nodes"   
+      v-model:nodes="nodes"  
+      v-model:edges="edges" 
       :node-types="nodeTypes"
       class="workflow-container"
       :default-zoom="1.5"
@@ -42,7 +43,7 @@ import '@vue-flow/core/dist/theme-default.css';
 import '@vue-flow/controls/dist/style.css';
 import '@vue-flow/minimap/dist/style.css';
 
-const { nodeTypes, handleAddNode, handleConnect, nodes } = useWorkflowStore();
+const { nodeTypes, handleAddNode, handleConnect, nodes, edges } = useWorkflowStore();
 
 const onConnect = (params: Edge) => {
   handleConnect(params); 

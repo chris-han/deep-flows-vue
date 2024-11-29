@@ -54,7 +54,7 @@ export const useWorkflowStore = () => {
       target: params.target,
       type: params.type,
     };
-    edges.value.push(newEdge);
+    edges.value = [...edges.value, newEdge];
   };
 
   return {
