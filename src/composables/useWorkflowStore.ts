@@ -8,7 +8,10 @@ interface Node {
   type: string;
   position: { x: number, y: number };
   data: { type: string
-    content: string};
+    content: string
+    contentBgColor: string
+  };
+  
 }
 
 interface Edge {
@@ -16,6 +19,7 @@ interface Edge {
   source: string;
   target: string;
   type?: string;
+  color?: string;
 }
 
 let nodeId = 0;
@@ -57,11 +61,37 @@ export const useWorkflowStore = () => {
     edges.value = [...edges.value, newEdge];
   };
 
+  const removeNode = (nodeId: string) => {
+    nodes.value = nodes.value.filter(node => node.id !== nodeId);
+    // Also remove connected edges
+    edges.value = edges.value.filter(edge => 
+      edge.source !== nodeId && edge.target !== nodeId
+    );
+  };
+  
+  const removeEdge = (edgeId: string) => {
+    edges.value = edges.value.filter(edge => edge.id !== edgeId);
+  };
+  const updateNodeProperty = (nodeId: string, properties: Record<string, any>) => {
+    console.log(properties)
+    const nodeIndex = nodes.value.findIndex(node => node.id === nodeId);
+    if (nodeIndex !== -1) {
+      nodes.value = nodes.value.map((node, index) => 
+        index === nodeIndex 
+          ? { ...node, data: { ...node.data, ...properties } }
+          : node
+      );
+    }
+  };
+
   return {
     nodes,
     edges,
     handleAddNode,
     handleConnect,
-    nodeTypes, // Dummy node type for example purposes; adjust as needed
+    nodeTypes, 
+    removeNode,
+    removeEdge,
+    updateNodeProperty,
   };
 };

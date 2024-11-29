@@ -1,20 +1,7 @@
-<script setup lang="ts">
-import { Handle, Position } from '@vue-flow/core'
-
-const props = defineProps<{
-  data: {
-    type: string
-    content: string
-    processType?: 'transform' | 'filter' | 'aggregate'  // Added process-specific types
-  }
-  id: string
-}>()
-</script>
-
 <template>
-  <div class="process-node">
+  <div class="node">
     <Handle type="target" position="left" :position="Position.Left" />
-    <div class="process-node-content p-4 bg-white rounded-lg shadow-md">
+    <div class="node-content" :style="{ backgroundColor: props.data.contentBgColor }">
       <div class="text-sm font-semibold mb-2">
         <span class="process-icon">⚙️</span>
         {{ props.data.type }}
@@ -42,21 +29,33 @@ const props = defineProps<{
   </div>
 </template>
 
-<style scoped>
-.process-node {
-  min-width: 200px;
-}
+<script setup lang="ts">
+import { Handle, Position } from '@vue-flow/core'
+import { watch } from 'vue'
+import BaseNode from './BaseNode.vue'
+import './BaseNode.vue';
 
-.process-node-content {
-  border: 1px solid #ddd;
-  background-color: #f8f9fa;
-}
+const props = defineProps<{
+  data: {
+    type: string
+    content: string
+    processType?: 'transform' | 'filter' | 'aggregate'
+    contentBgColor: string
+  }
+  id: string  
+}>()
 
+watch(() => props.data.contentBgColor, (newColor) => {
+  document.querySelector('.node-content').style.backgroundColor = newColor;
+});
+</script>
+
+<style>
 .process-icon {
   margin-right: 4px;
 }
 
 select {
-  background-color: white;
+  background-color: rgb(255, 255, 255);
 }
 </style>

@@ -1,19 +1,7 @@
-<script setup lang="ts">
-import { Handle, Position } from '@vue-flow/core'
-
-const props = defineProps<{
-  data: {
-    type: string
-    content: string
-  }
-  id: string
-}>()
-</script>
-
 <template>
-  <div class="custom-node">
+  <div class="node">
     <Handle type="target" position="left" :position="Position.Left" />
-    <div class="custom-node-content p-4 bg-white rounded-lg shadow-md">
+    <div class="node-content" :style="{ backgroundColor: props.data.contentBgColor }">
       <div class="text-sm font-semibold mb-2">{{ props.data.type }}</div>
       <input
         type="text"
@@ -29,12 +17,22 @@ const props = defineProps<{
   </div>
 </template>
 
-<style scoped>
-.custom-node {
-  min-width: 150px;
-}
+<script setup lang="ts">
+import { Handle, Position } from '@vue-flow/core'
+import { watch } from 'vue'
+import BaseNode from './BaseNode.vue'
+import './BaseNode.vue';
 
-.custom-node-content {
-  border: 1px solid #ddd;
-}
-</style>
+const props = defineProps<{
+  data: {
+    type: string
+    content: string
+    contentBgColor: string
+  }
+  id: string  
+}>()
+
+watch(() => props.data.contentBgColor, (newColor) => {
+  document.querySelector('.node-content').style.backgroundColor = newColor;
+});
+</script>
