@@ -17,7 +17,7 @@ const nodes = ref([]); // Reactive state for nodes
 
 <template>
   <div class="h-screen w-full">
-    <VueFlow v-model:nodes="nodes" <!-- Bind v-model to the reactive state -->
+    <VueFlow v-model:nodes="nodes">
       :node-types="nodeTypes" class="workflow-container" :default-zoom="1.5"
       :min-zoom="0.2" :max-zoom="4" >
       <WorkflowBackground />
