@@ -63,11 +63,13 @@ export const useWorkflowStore = () => {
   };
 
   const handleConnect = (params: Edge) => {
+    console.log('Connecting:', params); // Log the parameters to inspect them
     const newEdge: Edge = {
       id: `edge-${params.source}-${params.target}`,
       source: params.source,
       target: params.target,
       type: params.type,
+      color: params.color,
     };
     edges.value = [...edges.value, newEdge];
   };

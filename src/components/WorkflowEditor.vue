@@ -16,11 +16,11 @@
       :default-zoom="1.5"
       :min-zoom="0.2"
       :max-zoom="4"      
-      @connect="onConnect" 
+      @connect="handleConnect" 
       @nodeContextMenu="onNodeContextMenu" 
       @edgeContextMenu="onEdgeContextMenu" 
-      @nodeClick="onNodeClick" 
-      @edgeClick="onEdgeClick" 
+      @nodeClick="handleNodeClick" 
+      @edgeClick="handleEdgeClick" 
       @nodeMouseEnter="onNodeMouseEnter"
       @nodeMouseMove="onNodeMouseMove" 
       @nodeMouseLeave="onNodeMouseLeave" 
@@ -64,9 +64,8 @@ import '@vue-flow/core/dist/style.css';
 import '@vue-flow/core/dist/theme-default.css';
 import '@vue-flow/controls/dist/style.css';
 import '@vue-flow/minimap/dist/style.css';
-// import { handleConnect } from '../composables/useWorkflowStore'; // Ensure this is correctly imported
 
-const { 
+const {
   nodeTypes, 
   handleAddNode, 
   handleConnect, 
@@ -77,19 +76,15 @@ const {
   updateNodeProperty
 } = useWorkflowStore();
 
-// Context menu state
 const showContextMenu = ref(false);
 const contextMenuStyle = ref({});
 const selectedElement = ref<{ id: string, type: 'node' | 'edge' } | null>(null);
 const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeead'];
 
-
-
 const handleColorChange = (color: string) => {
   if (selectedElement.value) {
     if (selectedElement.value.type === 'node') {
       const nodeId = selectedElement.value.id;
-      
       updateNodeProperty(nodeId, { contentBgColor: color });
     } else if (selectedElement.value.type === 'edge') {
       const edgeIndex = edges.value.findIndex(e => e.id === selectedElement.value.id);
@@ -106,24 +101,31 @@ const handleColorChange = (color: string) => {
   selectedElement.value = null;
 };
 
-// Handle keyboard delete
 const handleKeyDown = (event: KeyboardEvent) => {
-  console.log(selectedElement.value)
-  if (event.key === 'Delete' && selectedElement.value) { 
-    
-    if (selectedElement.value.type === 'node') {
-      
-      removeNode(selectedElement.value.id);
-    } else {
-      removeEdge(selectedElement.value.id);
-    }
-    selectedElement.value = null;
+  console.log('Key down event', event.key);
+  console.log('Selected element before handling delete:', selectedElement.value);
+  if (event.key === 'Delete') {
+    handleDelete();
+    console.log('Selected element after handling delete:', selectedElement.value);
   }
 };
 
-// Context menu handlers
+const handleNodeClick = (event: Node) => {
+  const node = event.node;  
+  selectedElement.value = { id: node.id, type: 'node' };
+  console.log('Node clicked:', selectedElement.value);
+};
+
+const handleEdgeClick = (event: Edge) => {
+  const edge = event.edge;  
+  selectedElement.value = { id: edge.id, type: 'edge' };
+  console.log('Edge clicked:', selectedElement.value);
+};
+
 const onNodeContextMenu = (event: { event: MouseEvent, node: Node }) => {
   event.event.preventDefault();
+  event.event.stopPropagation();
+
   showContextMenu.value = true;
   selectedElement.value = { id: event.node.id, type: 'node' };
   contextMenuStyle.value = {
@@ -131,11 +133,12 @@ const onNodeContextMenu = (event: { event: MouseEvent, node: Node }) => {
     top: `${event.event.clientY}px`,
     left: `${event.event.clientX}px`,
   };
-  document.removeEventListener('keydown', handleKeyDown)
 };
 
 const onEdgeContextMenu = (event: { event: MouseEvent, edge: Edge }) => {
   event.event.preventDefault();
+  event.event.stopPropagation();
+
   showContextMenu.value = true;
   selectedElement.value = { id: event.edge.id, type: 'edge' };
   contextMenuStyle.value = {
@@ -143,8 +146,8 @@ const onEdgeContextMenu = (event: { event: MouseEvent, edge: Edge }) => {
     top: `${event.event.clientY}px`,
     left: `${event.event.clientX}px`,
   };
-  document.removeEventListener('keydown', handleKeyDown);
 };
+
 const handleDelete = () => {
   if (selectedElement.value) {
     if (selectedElement.value.type === 'node') {
@@ -157,13 +160,20 @@ const handleDelete = () => {
   selectedElement.value = null;
 };
 
-// Close context menu when clicking outside
-const closeContextMenu = () => {
-  showContextMenu.value = false;
-  selectedElement.value = null;
-  document.addEventListener('keydown', handleKeyDown);
-}; // Add this closing brace
+const closeContextMenu = (event: MouseEvent) => {
+  // if (!showContextMenu.value) return;
 
+  const contextMenuElement = event.target as HTMLElement;
+
+  if (!contextMenuElement.closest('.context-menu')) {
+    showContextMenu.value = false;
+
+    // Only reset selectedElement if the click is outside workflow elements (nodes and edges).
+    if (!event.target.closest('.vue-flow__node') && !event.target.closest('.vue-flow__edge')) {
+      selectedElement.value = null;
+    }
+  }
+};
 
 onMounted(() => {
   document.addEventListener('click', closeContextMenu);
@@ -175,15 +185,8 @@ onUnmounted(() => {
   document.removeEventListener('keydown', handleKeyDown);
 });
 
-const onConnect = (params: Edge) => {
-  handleConnect(params); 
-};
-
-// Add a deep watcher for nodes if necessary
 watch(nodes, (newValue) => {
-  // Any necessary logic on nodes change
 }, { deep: true });
-
 
 const handleDragOver = (event: DragEvent) => {
   event.preventDefault();
@@ -196,19 +199,17 @@ const handleDragEnter = (event: DragEvent) => {
 const handleDrop = (event: DragEvent) => {
   event.preventDefault();
   const nodeType = event.dataTransfer?.getData('node-type');
-  
   if (nodeType === 'process') {
     const bounds = event.currentTarget.getBoundingClientRect();
     const position = {
       x: event.clientX - bounds.left,
       y: event.clientY - bounds.top
     };
-    
     const node = handleAddNode('process', position, { label: 'process content...' });
     console.log('Node ID:', node.id);
     selectedElement.value = { id: node.id, type: 'node' };
   }
-}
+};
 </script>
 
 <style>
