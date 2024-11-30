@@ -22,7 +22,7 @@ interface Edge {
   color?: string;
 }
 
-let nodeId = 0;
+// let nodeId = 0;
 
 export const useWorkflowStore = () => {
   const nodes = shallowRef<Node[]>([]);
@@ -38,8 +38,9 @@ export const useWorkflowStore = () => {
     const nodePosition = position || { x: 0, y: 0 };
     console.log('Drop event triggered', position, 'type:', type);
     
+    const nodeId = `${crypto.randomUUID()}`;
     const newNode = {
-      id: `node-${nodeId++}`,
+      id: nodeId,
       type: type,
       position: nodePosition,
       data: { 
@@ -49,6 +50,8 @@ export const useWorkflowStore = () => {
       }
     };
     nodes.value = [...nodes.value, newNode];
+  
+    return nodeId; // Return the newly generated nodeId
   };
 
   const handleConnect = (params: Edge) => {

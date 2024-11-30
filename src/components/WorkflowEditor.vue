@@ -203,7 +203,9 @@ const handleDrop = (event: DragEvent) => {
       x: event.clientX - bounds.left,
       y: event.clientY - bounds.top
     };
-    handleAddNode('process', position, { label: 'process content...' })
+    
+    const nodeId = handleAddNode('process', position, { label: 'process content...' });
+    console.log('Node ID:', nodeId);
   }
 }
 </script>
