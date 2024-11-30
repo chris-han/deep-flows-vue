@@ -2,6 +2,9 @@
 import CustomNode from '../components/nodes/CustomNode.vue'
 import ProcessNode from '../components/nodes/ProcessNode.vue'
 import { shallowRef, markRaw } from 'vue';
+import { Stack } from 'typescript-collections';
+// const selectedObjectIdStack: Stack<number> = new Stack<number>();
+
 
 interface Node {
   id: string;
@@ -22,11 +25,16 @@ interface Edge {
   color?: string;
 }
 
-// let nodeId = 0;
+interface SelectedOjbject {
+  id: string;
+  type: string; //'node' | 'edge'
+}
+
 
 export const useWorkflowStore = () => {
   const nodes = shallowRef<Node[]>([]);
   const edges = shallowRef<Edge[]>([]);
+  const selectedObjectStack:Stack<SelectedOjbject> = new Stack<SelectedOjbject>();
 
   const nodeTypes = {
     process: markRaw(ProcessNode),  // Add 'process' type
@@ -37,21 +45,21 @@ export const useWorkflowStore = () => {
   const handleAddNode = (type: string, position?: { x: number; y: number }) => {
     const nodePosition = position || { x: 0, y: 0 };
     console.log('Drop event triggered', position, 'type:', type);
-    
-    const nodeId = `${crypto.randomUUID()}`;
+
+    const nodeId = `node,${crypto.randomUUID()}`;
     const newNode = {
       id: nodeId,
       type: type,
       position: nodePosition,
-      data: { 
+      data: {
         type: type.charAt(0).toUpperCase() + type.slice(1), // Capitalize first letter
         content: '',
         processType: type === 'process' ? 'transform' : undefined // Set default process type
       }
     };
     nodes.value = [...nodes.value, newNode];
-  
-    return nodeId; // Return the newly generated nodeId
+    selectedObjectStack.push({id: nodeId, type: 'node'}); //used tracking selected object for undo/redo functionality  
+    return newNode;
   };
 
   const handleConnect = (params: Edge) => {
@@ -75,6 +83,7 @@ export const useWorkflowStore = () => {
   const removeEdge = (edgeId: string) => {
     edges.value = edges.value.filter(edge => edge.id !== edgeId);
   };
+
   const updateNodeProperty = (nodeId: string, properties: Record<string, any>) => {
     console.log(properties)
     const nodeIndex = nodes.value.findIndex(node => node.id === nodeId);
@@ -90,6 +99,7 @@ export const useWorkflowStore = () => {
   return {
     nodes,
     edges,
+    selectedObjectStack,
     handleAddNode,
     handleConnect,
     nodeTypes, 

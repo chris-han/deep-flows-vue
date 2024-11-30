@@ -160,7 +160,7 @@ const handleDelete = () => {
 // Close context menu when clicking outside
 const closeContextMenu = () => {
   showContextMenu.value = false;
-  // selectedElement.value = null;
+  selectedElement.value = null;
   document.addEventListener('keydown', handleKeyDown);
 }; // Add this closing brace
 
@@ -204,8 +204,9 @@ const handleDrop = (event: DragEvent) => {
       y: event.clientY - bounds.top
     };
     
-    const nodeId = handleAddNode('process', position, { label: 'process content...' });
-    console.log('Node ID:', nodeId);
+    const node = handleAddNode('process', position, { label: 'process content...' });
+    console.log('Node ID:', node.id);
+    selectedElement.value = { id: node.id, type: 'node' };
   }
 }
 </script>
