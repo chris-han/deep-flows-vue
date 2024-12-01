@@ -21,12 +21,13 @@
       @edgeContextMenu="onEdgeContextMenu" 
       @nodeClick="handleNodeClick" 
       @edgeClick="handleEdgeClick" 
-      @nodeMouseEnter="onNodeMouseEnter"
+      >
+      <!-- @nodeMouseEnter="onNodeMouseEnter"
       @nodeMouseMove="onNodeMouseMove" 
       @nodeMouseLeave="onNodeMouseLeave" 
       @paneScroll="onPaneScroll"
-      @paneDrag="onPaneDrag"
-    >
+      @paneDrag="onPaneDrag" -->
+    
       <WorkflowBackground />
       <WorkflowControls />
       <WorkflowNodes />
@@ -205,7 +206,13 @@ const handleDrop = (event: DragEvent) => {
       x: event.clientX - bounds.left,
       y: event.clientY - bounds.top
     };
-    const node = handleAddNode(nodeType, position, { label: `${nodeType.charAt(0).toUpperCase() + nodeType.slice(1)} content...` });
+    const data = {
+      type: `${nodeType.charAt(0).toUpperCase() + nodeType.slice(1)}`, 
+      title: `${nodeType.charAt(0).toUpperCase() + nodeType.slice(1)}`, // Capitalize first letter
+      content: `${nodeType} content...`, // Example content
+      processType: nodeType === 'process' ? 'transform' : undefined      
+    };
+    const node = handleAddNode(nodeType, position, data); // Pass position and dataconst node = handleAddNode(nodeType, position, { label: `${nodeType.charAt(0).toUpperCase() + nodeType.slice(1)} content...` });
     console.log('Node ID:', node.id);
     selectedElement.value = { id: node.id, type: 'node' };
   }

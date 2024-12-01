@@ -12,7 +12,7 @@
 import { Handle, Position } from '@vue-flow/core'
 const props = defineProps<{
   data: {
-    type: string
+    title: string
     content: string
     contentBgColor: string
   }

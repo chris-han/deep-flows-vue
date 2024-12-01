@@ -1,11 +1,10 @@
 <template>
   <div class="node" ref="node">
     <Handle type="target" position="left" :position="Position.Left" />
-    <Handle type="target" position="left" :position="Position.Left" />
     <div class="node-content" :style="{ backgroundColor: props.data.contentBgColor }">
       <div class="text-sm font-semibold mb-2">
         <span class="process-icon">⚙️</span>
-        {{ props.data.type }}
+        {{ props.data.title }}
       </div>
       <select 
         v-if="props.data.processType"
@@ -20,7 +19,7 @@
         type="text"
         v-model="props.data.content"
         class="w-full p-2 border rounded"
-        :placeholder="`${props.data.type} content...`"
+        :placeholder="`${props.data.title} content...`"
         @touchstart.passive
         @touchmove.passive
         @touchend.passive
@@ -39,7 +38,7 @@ import './BaseNode.vue'
 
 const props = defineProps<{
   data: {
-    type: string
+    title: string
     content: string
     processType?: 'transform' | 'filter' | 'aggregate'
     contentBgColor: string

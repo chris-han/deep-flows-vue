@@ -13,7 +13,7 @@
     </div>
     <div class="toolbar-item" 
          draggable="true"
-         node-type="task"
+         node-type="prefect_task"
          @dragstart.passive="startDrag"
          @drag.passive="onDrag"
          @dragend.passive="stopDrag"
@@ -24,7 +24,7 @@
     </div>
     <div class="toolbar-item" 
          draggable="true"
-         node-type="flow"
+         node-type="prefect_flow"
          @dragstart.passive="startDrag"
          @drag.passive="onDrag"
          @dragend.passive="stopDrag"

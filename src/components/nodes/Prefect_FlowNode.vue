@@ -4,7 +4,7 @@
       <div class="node-content" :style="{ backgroundColor: props.data.contentBgColor }">
         <div class="text-sm font-semibold mb-2">
           <span class="flow-icon">🌊</span>
-          Flow: {{ props.data.label }}
+          Flow: {{ props.data.title }}
         </div>
         <input
           type="text"
@@ -20,10 +20,11 @@
   <script setup lang="ts">
   import { Handle, Position } from '@vue-flow/core';
   import { ref, onMounted } from 'vue';
+  import './BaseNode.vue'
   
   const props = defineProps<{
     data: {
-      label: string;
+      title: string;
       content: string;
       contentBgColor: string;
     }
