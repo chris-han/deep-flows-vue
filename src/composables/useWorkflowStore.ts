@@ -1,6 +1,8 @@
 // src/composables/useWorkflowStore.ts
 import CustomNode from '../components/nodes/CustomNode.vue'
 import ProcessNode from '../components/nodes/ProcessNode.vue'
+import Prefect_FlowNode from '../components/nodes/Prefect_FlowNode.vue';
+import Prefect_TaskNode from '../components/nodes/Prefect_TaskNode.vue';
 import { shallowRef, markRaw } from 'vue';
 import { Stack } from 'typescript-collections';
 // const selectedObjectIdStack: Stack<number> = new Stack<number>();
@@ -39,7 +41,9 @@ export const useWorkflowStore = () => {
   const nodeTypes = {
     process: markRaw(ProcessNode),  // Add 'process' type
     custom: markRaw(CustomNode),
-    default: markRaw(CustomNode)
+    default: markRaw(ProcessNode),
+    prefect_flow: markRaw(Prefect_FlowNode),
+    prefect_task: markRaw(Prefect_TaskNode)
   };
 
   const handleAddNode = (type: string, position?: { x: number; y: number }) => {

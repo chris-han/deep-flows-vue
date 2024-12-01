@@ -199,13 +199,13 @@ const handleDragEnter = (event: DragEvent) => {
 const handleDrop = (event: DragEvent) => {
   event.preventDefault();
   const nodeType = event.dataTransfer?.getData('node-type');
-  if (nodeType === 'process') {
+  if (nodeType) {
     const bounds = event.currentTarget.getBoundingClientRect();
     const position = {
       x: event.clientX - bounds.left,
       y: event.clientY - bounds.top
     };
-    const node = handleAddNode('process', position, { label: 'process content...' });
+    const node = handleAddNode(nodeType, position, { label: `${nodeType.charAt(0).toUpperCase() + nodeType.slice(1)} content...` });
     console.log('Node ID:', node.id);
     selectedElement.value = { id: node.id, type: 'node' };
   }
