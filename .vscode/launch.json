@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "Launch Edge against localhost",
+      "url": "http://localhost:5173", // Ensure this port matches the one used by Vite's dev server
+      "webRoot": "${workspaceFolder}/src",
+      "breakOnLoad": true,
+      "sourceMaps": true,
+      "skipFiles": ["node_modules/**"],
+      "preLaunchTask": "npm: dev"
+    }
+  ]
+}

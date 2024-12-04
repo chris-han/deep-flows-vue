@@ -6,3 +6,6 @@
 ### TODO: 
 * Adding Undo/Redo
 * Prefect integration
+
+### Run your Vue app:
+Open a terminal in VS Code and run the development server with npm run dev or yarn dev.
